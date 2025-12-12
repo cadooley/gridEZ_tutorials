@@ -1,0 +1,19 @@
+project:
+  type: website
+
+website:
+  title: "Tutorials for Generating Gridded Sampling Frames"
+  sidebar:
+    style: docked
+    contents:
+      - gridEZ_tutorial1.qmd
+      - gridEZ_tutorial2.qmd
+      - gridEZ_tutorial3.qmd
+  page-navigation: true   # optional, adds Prev/Next links at bottom
+
+format:
+  html:
+    theme: lux
+    toc: true           # automatically generate TOC for the current page
+    toc-depth: 4        # number of heading levels to include in TOC
+    css: styles.css     # custom CSS for heading capitalization, etc.
