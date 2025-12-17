@@ -154,14 +154,20 @@ We are very interested to know:
 
 Please use the link below to provide any comments or feedback.
 
-<a id="feedback-link" href="#"> Give feedback </a>
+<a id="feedback-link" target="_blank">Give feedback</a>
 
 ```{=html}
 <script>
-  const base =
-    "https://docs.google.com/forms/d/e/FORM_ID/viewform?usp=pp_url&entry.123456=";
+document.addEventListener("DOMContentLoaded", function() {
+  // Your Google Form URL
+  const base = "https://docs.google.com/forms/d/e/1FAIpQLSdOokaez2GCTBqDzOOJbqTxU2ydZU5TvzW7oO75BhVMnPo8Iw/viewform?usp=pp_url&entry.1982908603=";
 
-  document.getElementById("feedback-link").href =
-    base + encodeURIComponent(window.location.href);
+  // Make sure the element exists
+  const link = document.getElementById("feedback-link");
+  if (link) {
+    // Set the href dynamically
+    link.setAttribute("href", base + encodeURIComponent(window.location.href));
+  }
+});
 </script>
 ```

@@ -528,8 +528,8 @@ Table&nbsp;1: GHS-SMOD Settlement categories
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          used (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
-Ncells 1682006 89.9    3058008 163.4         NA  3058008 163.4
-Vcells 2494256 19.1   10146329  77.5      36864  8669031  66.2</code></pre>
+Ncells 1682012 89.9    3058052 163.4         NA  3058052 163.4
+Vcells 2494404 19.1   10146329  77.5      36864  8669185  66.2</code></pre>
 </div>
 </div>
 <p><code>gridEZ</code> utilises parallel processing to generate EZs for different strata at the same time. The number of parallel jobs that can be executed will depend on your computing system. You can work this out using the following code.</p>
@@ -997,13 +997,19 @@ Geodetic CRS:  WGS 84</code></pre>
 <li><p>how these tutorials can be updated or improved</p></li>
 </ul>
 <p>Please use the link below to provide any comments or feedback.</p>
-<p><a id="feedback-link" href="#"> Give feedback </a></p>
+<p><a id="feedback-link" target="_blank">Give feedback</a></p>
 <script>
-  const base =
-    "https://docs.google.com/forms/d/e/FORM_ID/viewform?usp=pp_url&entry.123456=";
+document.addEventListener("DOMContentLoaded", function() {
+  // Your Google Form URL
+  const base = "https://docs.google.com/forms/d/e/1FAIpQLSdOokaez2GCTBqDzOOJbqTxU2ydZU5TvzW7oO75BhVMnPo8Iw/viewform?usp=pp_url&entry.1982908603=";
 
-  document.getElementById("feedback-link").href =
-    base + encodeURIComponent(window.location.href);
+  // Make sure the element exists
+  const link = document.getElementById("feedback-link");
+  if (link) {
+    // Set the href dynamically
+    link.setAttribute("href", base + encodeURIComponent(window.location.href));
+  }
+});
 </script>
 
 

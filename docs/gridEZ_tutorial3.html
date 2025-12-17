@@ -467,8 +467,8 @@ Geodetic CRS:  WGS 84</code></pre>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          used (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
-Ncells 1671867 89.3    3078040 164.4         NA  2448144 130.8
-Vcells 2531512 19.4   10146329  77.5      36864 10145397  77.5</code></pre>
+Ncells 1671873 89.3    3078030 164.4         NA  2448315 130.8
+Vcells 2531660 19.4   10146329  77.5      36864 10145545  77.5</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define number of cores for parallel processing</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>processing_cores <span class="ot">&lt;-</span> <span class="fu">max</span>(parallel<span class="sc">::</span><span class="fu">detectCores</span>() <span class="sc">-</span> <span class="dv">1</span>, <span class="dv">1</span>)</span>
@@ -702,13 +702,19 @@ Vcells 2531512 19.4   10146329  77.5      36864 10145397  77.5</code></pre>
 <li><p>how these tutorials can be updated or improved</p></li>
 </ul>
 <p>Please use the link below to provide any comments or feedback.</p>
-<p><a id="feedback-link" href="#"> Give feedback </a></p>
+<p><a id="feedback-link" target="_blank">Give feedback</a></p>
 <script>
-  const base =
-    "https://docs.google.com/forms/d/e/FORM_ID/viewform?usp=pp_url&entry.123456=";
+document.addEventListener("DOMContentLoaded", function() {
+  // Your Google Form URL
+  const base = "https://docs.google.com/forms/d/e/1FAIpQLSdOokaez2GCTBqDzOOJbqTxU2ydZU5TvzW7oO75BhVMnPo8Iw/viewform?usp=pp_url&entry.1982908603=";
 
-  document.getElementById("feedback-link").href =
-    base + encodeURIComponent(window.location.href);
+  // Make sure the element exists
+  const link = document.getElementById("feedback-link");
+  if (link) {
+    // Set the href dynamically
+    link.setAttribute("href", base + encodeURIComponent(window.location.href));
+  }
+});
 </script>
 
 
