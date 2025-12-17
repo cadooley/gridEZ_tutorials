@@ -652,3 +652,25 @@ This tutorial has covered:
 -   evaluating sampling frame EZs
 
 -   creating a table suitable for survey sample selection, i.e. containing EZ ID, population count and strata IDs
+
+## Feedback
+
+We are very interested to know:
+
+-   how survey practitioners, researchers and data collectors are using gridEZ
+
+-   how these tutorials can be updated or improved
+
+Please use the link below to provide any comments or feedback.
+
+<a id="feedback-link" href="#"> Give feedback </a>
+
+```{=html}
+<script>
+  const base =
+    "https://docs.google.com/forms/d/e/FORM_ID/viewform?usp=pp_url&entry.123456=";
+
+  document.getElementById("feedback-link").href =
+    base + encodeURIComponent(window.location.href);
+</script>
+```

@@ -10,9 +10,21 @@ suggested-citation: "Dooley, C.A. (2025). gridEZ Tutorial 0 version 1.0"
 bibliography: references.bib
 ---
 
+```{r}
+#| echo: false
+#| label: fig-plot0.1
+#| fig-width: 5
+#| fig-asp: 1
+#| fig-alt: "Example gridEZ sampling frame"
+#| fig-cap: "Example gridEZ sampling frame for Samoa. Map imagery: Google, Maxar Technologies ©2025"
+
+knitr::include_graphics("images/WSM_example_output_medEZ.png")
+
+```
+
 ## Overview
 
-Household surveys provide vital information on the state of a population, e.g. health, economics, perceptions. To accurately assess such population characteristics, household surveys require a robust survey design including reliable sampling frames from which Primary Sampling Units (PSUs) are selected. In many settings bespoke sampling frames are needed. For example, where standard sampling frames are unsuitable due to survey needs or unavailable due to missing geographic data. To address this problem, we have designed the **`gridEZ`** algorithm that utilizes gridded population data to generate gridded enumeration zones (EZs), which can serve as a robust sampling frame for household surveys.
+Surveys provide vital information on the state of a population, e.g. health, economics, perceptions. To accurately assess such population characteristics, surveys require a robust survey design including reliable sampling frames from which Primary Sampling Units (PSUs) are selected. In many settings bespoke sampling frames are needed. For example, where standard sampling frames are unsuitable due to survey needs or unavailable due to missing geographic data. To address this problem, we have designed the **`gridEZ`** algorithm that utilizes gridded population data to generate gridded enumeration zones (EZs), which can serve as a robust sampling frame for household surveys.
 
 These tutorials provide all the code needed not only to run `gridEZ` but to prepare input data effectively, review output sampling frames and format outputs suitable for sample selection.
 
@@ -131,4 +143,26 @@ df <- data.frame(c(1:3),
 colnames(df) <- c("Tutorial","Pop. data","Strata 1","Strata 2","EZ size","Pre/user-defined specs")
 
 knitr::kable(df)
+```
+
+## Feedback
+
+We are very interested to know:
+
+-   how survey practitioners, researchers and data collectors are using gridEZ
+
+-   how these tutorials can be updated or improved
+
+Please use the link below to provide any comments or feedback.
+
+<a id="feedback-link" href="#"> Give feedback </a>
+
+```{=html}
+<script>
+  const base =
+    "https://docs.google.com/forms/d/e/FORM_ID/viewform?usp=pp_url&entry.123456=";
+
+  document.getElementById("feedback-link").href =
+    base + encodeURIComponent(window.location.href);
+</script>
 ```

@@ -3,7 +3,7 @@
     "path": "~/Documents/Research/gridEZ/gridEZ_tutorials/gridEZ_tutorial3.qmd",
     "project_path": "gridEZ_tutorial3.qmd",
     "type": "quarto_markdown",
-    "hash": "0",
+    "hash": "3647337182",
     "contents": "",
     "dirty": false,
     "created": 1765359771630.0,
@@ -17,16 +17,16 @@
         "Source": "Source",
         "docOutlineVisible": "1",
         "rmdVisualCollapsedChunks": "",
-        "cursorPosition": "0,0",
+        "cursorPosition": "398,0",
         "scrollLine": "0",
-        "rmdVisualModeLocation": "360:0"
+        "rmdVisualModeLocation": "15869:9463.2001953125"
     },
     "folds": "",
-    "lastKnownWriteTime": 1765540390,
+    "lastKnownWriteTime": 1765983114,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1765542356278,
+    "last_content_update": 1765983114706,
     "read_only": false,
     "read_only_alternatives": []
 }

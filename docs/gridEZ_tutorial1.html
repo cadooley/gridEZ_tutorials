@@ -213,6 +213,7 @@ div.csl-indent {
   <li><a href="#evaluating-gridded-sampling-frames" id="toc-evaluating-gridded-sampling-frames" class="nav-link" data-scroll-target="#evaluating-gridded-sampling-frames">Evaluating Gridded Sampling Frames</a></li>
   <li><a href="#creation-of-table-for-survey-sample-selection" id="toc-creation-of-table-for-survey-sample-selection" class="nav-link" data-scroll-target="#creation-of-table-for-survey-sample-selection">Creation of table for survey sample selection</a></li>
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#feedback" id="toc-feedback" class="nav-link" data-scroll-target="#feedback">Feedback</a></li>
   </ul>
 </nav>
     </div>
@@ -527,8 +528,8 @@ Table&nbsp;1: GHS-SMOD Settlement categories
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          used (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
-Ncells 1681995 89.9    3058034 163.4         NA  3058034 163.4
-Vcells 2493927 19.1   10146329  77.5      36864  8668708  66.2</code></pre>
+Ncells 1682006 89.9    3058035 163.4         NA  3058035 163.4
+Vcells 2494260 19.1   10146329  77.5      36864  8669038  66.2</code></pre>
 </div>
 </div>
 <p><code>gridEZ</code> utilises parallel processing to generate EZs for different strata at the same time. The number of parallel jobs that can be executed will depend on your computing system. You can work this out using the following code.</p>
@@ -987,6 +988,23 @@ Geodetic CRS:  WGS 84</code></pre>
 <li><p>evaluating sampling frame EZs</p></li>
 <li><p>creating a table suitable for survey sample selection, i.e.&nbsp;containing EZ ID, population count and strata IDs</p></li>
 </ul>
+</section>
+<section id="feedback" class="level2">
+<h2 class="anchored" data-anchor-id="feedback">Feedback</h2>
+<p>We are very interested to know:</p>
+<ul>
+<li><p>how survey practitioners, researchers and data collectors are using gridEZ</p></li>
+<li><p>how these tutorials can be updated or improved</p></li>
+</ul>
+<p>Please use the link below to provide any comments or feedback.</p>
+<p><a id="feedback-link" href="#"> Give feedback </a></p>
+<script>
+  const base =
+    "https://docs.google.com/forms/d/e/FORM_ID/viewform?usp=pp_url&entry.123456=";
+
+  document.getElementById("feedback-link").href =
+    base + encodeURIComponent(window.location.href);
+</script>
 
 
 
