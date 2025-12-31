@@ -57,8 +57,8 @@ getwd()
 # you may need to change your working directory to point to the location where the data_wsm folder sits. Use setwd() to change your working directory if needed
 
 # check whether the data folder already exists - if not, create the folder 
-file_path <- paste0(getwd(),"/data_wsm/")
-if (!dir.exists(paste0(file_path))) {
+file_path <- paste0(getwd(), "/data_wsm/")
+if (!dir.exists(file_path)) {
   dir.create(file_path)
 }
 ```
@@ -81,11 +81,11 @@ population_raster <- terra::rast("https://data.worldpop.org/GIS/Population/Globa
 ```{r}
 
 # Option 2: read in from file after download
-population_raster <- terra::rast(paste0(getwd(),"/data_wsm/wsm_pop_2025_CN_100m_R2025A_v1.tif"))
+population_raster <- terra::rast(paste0(getwd(), "/data_wsm/wsm_pop_2025_CN_100m_R2025A_v1.tif"))
 ```
 
 ```{r}
-plot(population_raster,main="Population distribution of Samoa (WorldPop data)")
+plot(population_raster, main = "Population distribution of Samoa (WorldPop data)")
 ```
 
 ### Settlement classification data
@@ -104,9 +104,9 @@ Second, hover your cursor over the map until you find Tile ID: R11_C2 (the Tile 
 
 ```{r}
 
-settlement_raster <- terra::rast(paste0(getwd(),"/data_wsm/GHS_SMOD_E2025_GLOBE_R2023A_54009_1000_V2_0_R11_C2/GHS_SMOD_E2025_GLOBE_R2023A_54009_1000_V2_0_R11_C2.tif"))
+settlement_raster <- terra::rast(paste0(getwd(), "/data_wsm/GHS_SMOD_E2025_GLOBE_R2023A_54009_1000_V2_0_R11_C2/GHS_SMOD_E2025_GLOBE_R2023A_54009_1000_V2_0_R11_C2.tif"))
 
-plot(settlement_raster,main="Settlement categories (GHS-SMOD data)")
+plot(settlement_raster, main = "Settlement categories (GHS-SMOD data)")
 ```
 
 As you can see the GHS-SMOD tile covers a large area. We will crop this data shortly!
@@ -121,13 +121,13 @@ Read in level 2 administrative units.
 
 ```{r}
 
-admin_sf <- sf::st_read(paste0(getwd(),"/data_WSM/gadm41_WSM_shp/gadm41_WSM_2.shp"))
+admin_sf <- sf::st_read(paste0(getwd(), "/data_WSM/gadm41_WSM_shp/gadm41_WSM_2.shp"))
 
 # look at the list of fields in admin_sf
 names(admin_sf)
 
 # plot the "GID_2" field which contains the level 2 unit IDs
-plot(admin_sf["GID_2"],main="Level 2 administrative units for Samoa (GADM data)")
+plot(admin_sf["GID_2"], main = "Level 2 administrative units for Samoa (GADM data)")
 ```
 
 ## Data Processing
@@ -140,29 +140,29 @@ The first processing step is to ensure all data have the same coordinate referen
 r_crs <- terra::crs(population_raster)
 
 # if the strata layers have a different CRS, transform
-if(r_crs !=sf::st_crs(admin_sf)){admin_sf <- sf::st_transform(admin_sf, r_crs)}
-if(r_crs !=terra::crs(settlement_raster)){settlement_raster <- terra::project(settlement_raster,terra::crs(population_raster),method="near")}
+if (r_crs != sf::st_crs(admin_sf)){admin_sf <- sf::st_transform(admin_sf, r_crs)}
+if (r_crs != terra::crs(settlement_raster)){settlement_raster <- terra::project(settlement_raster, terra::crs(population_raster), method = "near")}
 
 
 ```
 
-Next, we need to convert the sf object containing administrative units into a raster. We do this using the grid of the population raster.
+Next, we need to convert the sf object containing administrative units into a raster. We do this using the grid of the population raster. The `field` argument to the `rasterize` function should be a variable in admin_sf that uniquely identifies the administrative units; we'll use GID_2 in this example.
 
 ```{r}
 
 # rasterize admin_sf
-admin_raster <- terra::rasterize(admin_sf,population_raster,field="GID_2")
+admin_raster <- terra::rasterize(admin_sf, population_raster, field = "GID_2")
 
 # remove admin_sf object as we no long need it
 rm(admin_sf)
 
 ```
 
-The population data we are using has been constrained to settled areas. This means that grid cells that are settled have a population count and those that are not settled have an NA value. A sampling frame could be created for either settled areas only or for all areas within the focal region or country. There are pros and cons for each approach. We discuss and compare outputs for sampling frames constrained versus unconstrained to settled areas in a later tutorial. For now, we will create sampling frames that cover the whole of Samoa. As `gridEZ` recognizes any numerical value as a valid population count to be included in the sampling frame, we replace the NA grid cells, that are within the national boundary, with zero counts. We do this to distinguish grid cells inside the focal region/country from those outside the focal region/country. In this case, the outside of our focal country, Samoa, is sea and we certainly don't want EZs there!
+The population data we are using has been constrained to settled areas. This means that grid cells that are settled have a population count and those that are not settled have an NA value. A sampling frame could be created for either settled areas only or for all areas within the focal region or country. There are pros and cons for each approach. We discuss and compare outputs for sampling frames constrained versus unconstrained to settled areas in a later tutorial. For now, we will create sampling frames that cover the whole of Samoa. As `gridEZ` recognizes any numerical value as a valid population count to be included in the sampling frame, we replace the NA grid cells that are within the national boundary with zero counts. We do this to distinguish grid cells inside the focal region/country from those outside the focal region/country. In this case, the outside of our focal country, Samoa, is sea and we certainly don't want EZs there!
 
 ```{r}
 # replace grid cells of NA population counts that also have non-NA administrative unit values with 0 counts
-population_raster[is.na(population_raster)&!is.na(admin_raster)] <- 0
+population_raster[is.na(population_raster) & !is.na(admin_raster)] <- 0
 ```
 
 Next, we crop the settlement raster to the extent of the administrative units and population rasters.
@@ -170,7 +170,7 @@ Next, we crop the settlement raster to the extent of the administrative units an
 ```{r}
 
 # crop 
-settlement_raster <- terra::crop(settlement_raster,admin_raster,snap="out",extend=TRUE)
+settlement_raster <- terra::crop(settlement_raster, admin_raster, snap = "out", extend = TRUE)
 
 ```
 
@@ -192,9 +192,12 @@ GHS classify areas into categories as shown in @tbl-table1.1. If you'd like to l
 
 library(knitr) 
 
-df <- data.frame(c(10,11,12,13,21,22,23,30),
-            c("Water","Mostly inhabited","Dispersed rural","Village","Suburban or peri-urban","Semi-dense town","Dense town","City"),
-           c("NA","Rural","Rural","Rural","Urban","Urban","Urban","Urban"))
+df <- data.frame(
+  c(10, 11, 12, 13, 21, 22, 23, 30),
+  c("Water", "Mostly uninhabited", "Dispersed rural", "Village", 
+    "Suburban or peri-urban", "Semi-dense town", "Dense town", "City"),
+  c("NA", "Rural", "Rural", "Rural", 
+    "Urban", "Urban", "Urban", "Urban"))
 colnames(df) <- c("Code", "Category", "Merged categories")
 
 knitr::kable(df)
@@ -207,7 +210,7 @@ Looking at the settlement map above, we can see there are many instances where s
 # re-define categories
 settlement_raster[settlement_raster %in% c(30,23,22,21)] <- 1 # urban
 settlement_raster[settlement_raster %in% c(13,12,11)] <- 2 # rural
-settlement_raster[settlement_raster == 10] <- NA #water
+settlement_raster[settlement_raster == 10] <- NA # water
 
 # re-plot
 plot(settlement_raster, main = "Merged settlement categories (GHS-SMOD data)")
@@ -227,14 +230,14 @@ Save the three rasters into a folder called "made" inside your "data_wsm" folder
 #| eval: false
 
 # check whether the data folder already exists - if not, create the folder 
-file_path <- paste0(getwd(),"/data_wsm/made/")
-if (!dir.exists(paste0(file_path))) {
+file_path <- paste0(getwd(), "/data_wsm/made/")
+if (!dir.exists(file_path)) {
   dir.create(file_path)
 }
 # save rasters
-terra::writeRaster(admin_raster,paste0(file_path,"adminGADM.tif"))
-terra::writeRaster(population_raster,paste0(file_path,"popWP.tif"))
-terra::writeRaster(settlement_raster,paste0(file_path,"settGHS.tif"))
+terra::writeRaster(admin_raster, paste0(file_path, "adminGADM.tif"))
+terra::writeRaster(population_raster, paste0(file_path, "popWP.tif"))
+terra::writeRaster(settlement_raster, paste0(file_path, "settGHS.tif"))
 ```
 
 ## gridEZ: sampling frame generation
@@ -265,16 +268,16 @@ The `gridEZ` function reads input rasters straight from file so there is no need
 
 ```{r}
 # input
-file_path_inputs <- paste0(getwd(),"/data_wsm/made/")
+file_path_inputs <- paste0(getwd(), "/data_wsm/made/")
 
 # output
 # check whether the output folders already exists - if not, create them
-file_path_outputs_tuts <- paste0(getwd(),"/results_wsm/")
-if (!dir.exists(paste0(file_path_outputs_tuts))) {
+file_path_outputs_tuts <- paste0(getwd(), "/results_wsm/")
+if (!dir.exists(file_path_outputs_tuts)) {
   dir.create(file_path_outputs_tuts)
 }
-file_path_outputs <- paste0(getwd(),"/results_wsm/tutorial1/")
-if (!dir.exists(paste0(file_path_outputs))) {
+file_path_outputs <- paste0(getwd(), "/results_wsm/tutorial1/")
+if (!dir.exists(file_path_outputs)) {
   dir.create(file_path_outputs)
 }
 
@@ -292,35 +295,35 @@ Ok - let's run `gridEZ` with pre-defined specifications. To do this we set `pred
 #| eval: false
 
 # gridEZ function to generate sampling frame with large EZs: pre-defined specs
-gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs,"popWP.tif"), 
-                strata1_raster_path = paste0(file_path_inputs,"adminGADM.tif"), 
-                strata2_raster_path = paste0(file_path_inputs,"settGHS.tif"),
+gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs, "popWP.tif"), 
+                strata1_raster_path = paste0(file_path_inputs, "adminGADM.tif"), 
+                strata2_raster_path = paste0(file_path_inputs, "settGHS.tif"),
                 predefined_EZ_size = TRUE, 
                 EZ_target_size = "large",
-                output_path = paste0(file_path_outputs), 
+                output_path = file_path_outputs, 
                 run_ID = "wsm_large",
-                ncores=processing_cores)
+                ncores = processing_cores)
 ```
 
 In this example we are creating a sampling frame made up of "large" EZs but you can also produce sampling frames with "medium" or "small" EZs using the pre-defined `gridEZ` specifications. To do this you would replace "large" in the code above with "medium" or "small".
 
 Now let's run `gridEZ` with user-defined specifications. We do this by setting `predefined_EZ_size` to be FALSE and specifying the parameters `target_pop_per_EZ` and `max_cells_per_EZ`.
 
-Note, that the default for `predefined_EZ_size` is TRUE so if it is not included by the user, `gridEZ` will ignore `target_pop_per_EZ` and `max_cells_per_EZ` and the outputs will have (default) medium sized EZs.
+Note that the default for `predefined_EZ_size` is TRUE so if it is not included by the user, `gridEZ` will ignore `target_pop_per_EZ` and `max_cells_per_EZ` and the outputs will have (default) medium sized EZs.
 
 ```{r}
 #| eval: false
 
 # gridEZ function to generate sampling frame with large EZs: user-defined specs
-gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs,"popWP.tif"), 
-                strata1_raster_path = paste0(file_path_inputs,"adminGADM.tif"), 
-                strata2_raster_path = paste0(file_path_inputs,"settGHS.tif"),
+gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs, "popWP.tif"), 
+                strata1_raster_path = paste0(file_path_inputs, "adminGADM.tif"), 
+                strata2_raster_path = paste0(file_path_inputs, "settGHS.tif"),
                 predefined_EZ_size = FALSE,
                 target_pop_per_EZ = 1200,
                 max_cells_per_EZ = 2500,
-                output_path = paste0(file_path_outputs), 
+                output_path = file_path_outputs, 
                 run_ID = "wsm_large_ownspecs",
-                ncores=processing_cores)
+                ncores = processing_cores)
 ```
 
 As you can see from the code above, the user-defined specifications route offers flexibility as `target_pop_per_EZ` and `max_cells_per_EZ` can be tailored to specific survey needs.
@@ -339,7 +342,7 @@ Let's start by looking at the outputs for the sampling frame generated using the
 
 ```{r}
 # read in EZs table of your sampling frame 
-EZ_tab <- read.csv(paste0(file_path_outputs, "EZ_Pop_Ncells_wsm_large.csv"),header=T)
+EZ_tab <- read.csv(paste0(file_path_outputs, "EZ_Pop_Ncells_wsm_large.csv"), header = TRUE)
 # number of EZs in your sampling frame
 nrow(EZ_tab)
 # the first rows
@@ -353,43 +356,43 @@ To check that the sampling frame generated using the user-defined settings is th
 
 ```{r}
 # read in EZs table of your sampling frame 
-EZ_tab_ownspecs <- read.csv(paste0(file_path_outputs, "EZ_Pop_Ncells_wsm_large_ownspecs.csv"),header=T)
+EZ_tab_ownspecs <- read.csv(paste0(file_path_outputs, "EZ_Pop_Ncells_wsm_large_ownspecs.csv"), header = TRUE)
 # number of EZs in your sampling frame
 nrow(EZ_tab_ownspecs)
 # the first rows
 head(EZ_tab_ownspecs)
 ```
 
-From this we can see that the same sampling frame has been made. The goal of creating the two sampling frames was to demonstrate the two different approached. Now you have everything you need to start creating sampling frames using a variety of target EZ sizes.
+From this we can see that the same sampling frame has been made. The goal of creating the two sampling frames was to demonstrate the two different approaches. Now you have everything you need to start creating sampling frames using a variety of target EZ sizes.
 
 Let's carry on evaluating our sampling frame (we could use either pre- or user-defined outputs here). First, we'll create a map of the EZs.
 
 ```{r}
 # read in your sampling frame raster & plot
-EZ <- terra::rast(paste0(file_path_outputs,"EZ_IDs_wsm_large.tif"))
+EZ <- terra::rast(paste0(file_path_outputs, "EZ_IDs_wsm_large.tif"))
 
 # simple plot
 # convert to sf polygons
 res_poly <- terra::as.polygons(EZ, dissolve = TRUE)
 res_poly <- sf::st_as_sf(res_poly)
-# merge the ppolygons and EZ IDs
-res_poly <- merge(res_poly,EZ_tab,by="EZ_ID")
+# merge the polygons and EZ IDs
+res_poly <- merge(res_poly, EZ_tab, by = "EZ_ID")
 # plot EZ polygons coloured by EZ IDs
-plot(res_poly[,"geometry"],main="Spatial distribution of EZs")
+plot(res_poly[,"geometry"], main = "Spatial distribution of EZs")
 ```
 
 The plot above shows the EZ boundaries. Now let's look at the population sizes of the EZs.
 
 ```{r}
 # plot EZ polygons coloured by population per EZ
-plot(res_poly[,"pop"],main="EZ population size")
+plot(res_poly[,"pop"], main = "EZ population size")
 ```
 
 EZs with relatively low population size are located in the centre of the islands where the population is sparse. But if we had a target population per EZ, shouldn't all the EZs be within the desirable range of 800-1600 for the "large" EZ setting? No - because we also have a maximum geographic size per EZ too! Let's map the number of grid cells per EZ.
 
 ```{r}
 # plot EZ polygons coloured by number of grid cells per EZ
-plot(res_poly[,"N"],main="EZ grid cells count")
+plot(res_poly[,"N"], main = "EZ grid cells count")
 ```
 
 The maximum geographic size per EZ for the large EZ setting is 2,500 grid cells. However, `gridEZ` allows blocks up to 1.5 times the value given for the maximum geographic size to be accepted as an EZ. So in our example this is 3,750. The `gridEZ` function allows this leeway above the ideal maximum geographic size per EZ because the requirement to create compact shapes restricts how the algorithm can combine/split blocks of grid cells. Without this extra flexibility, we’d end up with many EZs much smaller than the maximum geographic size that also have low population counts - two undesirable traits. It is better for an EZ to be slightly larger in geographic size if that helps keep its population closer to the target.
@@ -402,7 +405,7 @@ Now that we've looked at the spatial distribution of population and grid cells p
 
 ggplot(res_poly, aes(x = N, y = pop)) +
   
-  # grey scatter plot area for values within acceptable values
+  # grey scatter plot area for values within acceptable ranges
   annotate("rect",
            xmin = 0, xmax = 3750,
            ymin = 800, ymax = 1600,
@@ -429,7 +432,7 @@ ggplot(res_poly, aes(x = N, y = pop)) +
   )
 ```
 
-The red horizontal lines indicate the desirable range for population per EZ and the blue vertical lines show the acceptable geographic size range for EZs with undesirably low population. You can see that no EZs are geographically larger than the acceptable maximum grid cells per EZ of 3,750. Therefore, all the EZs that fall between the red horizontal lines meet our criteria for ideal EZs (n = 169). The EZs that fall between the blue vertical lines but below the lower red horizontal line have a desirable geographic size given that they are located in sparsely populated areas. These are acceptable EZs (n=83). Generally, all EZs sitting outside of these areas on the scatter plot, (i.e. outside of the grey areas), are not considered to be acceptable EZs given our criteria.
+The red horizontal lines indicate the desirable range for population per EZ and the blue vertical lines show the acceptable geographic size range for EZs with undesirably low population. You can see that no EZs are geographically larger than the acceptable maximum grid cells per EZ of 3,750. Therefore, all the EZs that fall between the red horizontal lines meet our criteria for ideal EZs (n = 169). The EZs that fall between the blue vertical lines but below the lower red horizontal line have a desirable geographic size given that they are located in sparsely populated areas. These are acceptable EZs (n = 83). Generally, all EZs sitting outside of these areas on the scatter plot, (i.e. outside of the grey areas), are not considered to be acceptable EZs given our criteria.
 
 However, there are a number of restrictions that may lead to the criteria not being met. One example is when a single grid cell has population size greater than the upper end of the desirable population range, e.g. in densely populated areas of cities. The grid based nature of our algorithm means that we can not split individual grid cells and so these become individual EZs. On the scatter plot these EZs would be plotted on the far left (1 grid cell per EZ) above the upper red horizontal line. We can see from our scatter plot that, in this example, there are no single cell EZs with population size greater than 1,600 so no EZs fall into this category.
 
@@ -439,15 +442,15 @@ For our sampling frame, let's investigate all the EZs outside of the grey areas 
 
 res_poly$cat <- NA
 # category 1: meets pop and geog criteria 
-res_poly$cat[res_poly$N<=3750 & res_poly$pop>=800 & res_poly$pop<=1600] <- 1
+res_poly$cat[res_poly$N <= 3750 & res_poly$pop >= 800 & res_poly$pop <= 1600] <- 1
 # category 2: low pop but meets max geog range
-res_poly$cat[res_poly$N>=1875 & res_poly$N<=3750 & res_poly$pop<800] <- 2
+res_poly$cat[res_poly$N >= 1875 & res_poly$N <= 3750 & res_poly$pop < 800] <- 2
 # category 3: high pop but only 1 cell
-res_poly$cat[res_poly$N==1 & res_poly$pop>1600] <-3
+res_poly$cat[res_poly$N == 1 & res_poly$pop > 1600] <-3
 # category 4: below max geog range but over pop max and has more than 1 cell
-res_poly$cat[res_poly$N>1 & res_poly$pop>1600] <- 4
+res_poly$cat[res_poly$N > 1 & res_poly$pop > 1600] <- 4
 # category 5: pop & cell count are too low
-res_poly$cat[res_poly$N<1875 & res_poly$pop<800] <- 5
+res_poly$cat[res_poly$N < 1875 & res_poly$pop < 800] <- 5
 
 res_poly$cat <- as.factor(res_poly$cat)
 
@@ -469,7 +472,7 @@ ggplot(res_poly, aes(x = N, y = pop, colour = cat)) +
 
 ```
 
-Cateogories 1 and 2 correspond to the EZs we described above. Category 3 corresponds to single celled EZs with high population counts - as mentioned, we don't have any in this Samoa example. Category 4 consists of EZs whose population size is too big based on our criteria and category 5 consists of EZs whose population size is too small based on our criteria. Let's count the EZs in each category:
+Categories 1 and 2 correspond to the EZs we described above. Category 3 corresponds to single celled EZs with high population counts - as mentioned, we don't have any in this Samoa example. Category 4 consists of EZs whose population size is too big based on our criteria and category 5 consists of EZs whose population size is too small based on our criteria. Let's count the EZs in each category:
 
 ```{r}
 table(res_poly$cat)
@@ -478,14 +481,14 @@ table(res_poly$cat)
 There are `r as.numeric(table(res_poly$cat)[names(table(res_poly$cat))==1]+table(res_poly$cat)[names(table(res_poly$cat))==2])` EZs that fall into categories 1 and 2 out of a total of `r nrow(EZ_tab)` EZs in our sampling frame (i.e. `r round(as.numeric(table(res_poly$cat)[names(table(res_poly$cat))==1]+table(res_poly$cat)[names(table(res_poly$cat))==2])/nrow(EZ_tab)*100)`%. of all our EZs). There are `r as.numeric(table(res_poly$cat)[names(table(res_poly$cat))==4])` EZs in category 4 and `r as.numeric(table(res_poly$cat)[names(table(res_poly$cat))==5])` EZs in category 5. We can map the EZs by category to see where they are located.
 
 ```{r}
-plot(res_poly["cat"], pal = cat_cols, main="EZs by evaluation category")
+plot(res_poly["cat"], pal = cat_cols, main = "EZs by evaluation category")
 ```
 
 Straight away we can easily see a handful of EZs in category 5. Given their category, can you guess which points in the scatter plot correspond to these? Hint: their geographic size is only slightly below the target grid cells per EZ for sparsely populated areas. Of greater concern are the EZs that are very small in both population and geographic size. Let's zoom in on an area to take a closer look.
 
 ```{r}
 # zoomed in map
-plot(res_poly["cat"], pal = cat_cols,ylim=c(-13.96,-13.77),xlim=c(-172.27,-171.95), main="EZs by evaluation category - zoomed in")
+plot(res_poly["cat"], pal = cat_cols, ylim = c(-13.96, -13.77), xlim = c(-172.27, -171.95), main = "EZs by evaluation category - zoomed in")
 
 ```
 
@@ -514,8 +517,8 @@ p1 <- ggplot(res_poly) +
   )
 
 # read in the settlement raster and admin polygons
-settlement_raster <- terra::rast(paste0(file_path_inputs,"settGHS.tif"))
-admin_sf <- sf::st_read(paste0(getwd(),"/data_WSM/gadm41_WSM_shp/gadm41_WSM_2.shp"))
+settlement_raster <- terra::rast(paste0(file_path_inputs, "settGHS.tif"))
+admin_sf <- sf::st_read(paste0(getwd(), "/data_WSM/gadm41_WSM_shp/gadm41_WSM_2.shp"))
 
 # plot these survey strata
 # convert the raster into a data.frame first
@@ -542,7 +545,7 @@ p2 <- ggplot() +
 p1 + p2
 ```
 
-In the left hand plot we see several category 5 EZs. The right hand plot shows our two strata layers. The overall spatial stratification for the sampling frame is a combination of the two, i.e. stratum 1 = settlement type 1 in admin unit A; stratum 2 = settlement type 2 in admin unit A; stratum 3 = settlement type 1 in admin unit B; stratum 4 = settlement type 2 in admin unit B; etc. The overall spatial stratification delineates what we consider "uncrossable" boundaries and `gridEZ` therefore does not allow EZs to cross different strata. EZs are always contained within one stratum. This stratification approach is important for survey design but can lead to EZs with small population and small geograhpic size, depending on how the layers used to define the overall stratification intersect with one another. In our example, the overall stratification based on GHS-SMOD and GADM administrative units essentially consists of little psuedo islands within the landmass and explains most of the category 5 EZs that we see in the left hand plot above.
+In the left hand plot we see several category 5 EZs. The right hand plot shows our two strata layers. The overall spatial stratification for the sampling frame is a combination of the two, i.e. stratum 1 = settlement type 1 in admin unit A; stratum 2 = settlement type 2 in admin unit A; stratum 3 = settlement type 1 in admin unit B; stratum 4 = settlement type 2 in admin unit B; etc. The overall spatial stratification delineates what we consider "uncrossable" boundaries and `gridEZ` therefore does not allow EZs to cross different strata. EZs are always contained within one stratum. This stratification approach is important for survey design but can lead to EZs with small population and small geographic size, depending on how the layers used to define the overall stratification intersect with one another. In our example, the overall stratification based on GHS-SMOD and GADM administrative units essentially consists of little pseudo islands within the landmass and explains most of the category 5 EZs that we see in the left hand plot above.
 
 The `gridEZ` algorithm balances compactness of EZ shapes against meeting the population and geographic criteria. In several cases, this can lead to a decision not to add or split a block of grid cells and instead call it good as an EZ. This is the likely explanation for the remaining EZs in categories 4 and 5.
 
@@ -554,26 +557,26 @@ We can do this by spatially linking the EZ IDs raster with the two strata raster
 
 ```{r}
 # read in the strata raster
-admin_raster <- terra::rast(paste0(file_path_inputs,"adminGADM.tif"))
-settlement_raster <- terra::rast(paste0(file_path_inputs,"settGHS.tif"))
+admin_raster <- terra::rast(paste0(file_path_inputs, "adminGADM.tif"))
+settlement_raster <- terra::rast(paste0(file_path_inputs, "settGHS.tif"))
 
 # the extent of the EZ raster is defined by the presence of EZs and may be different to the extent of the input files which was set by the population raster
 # remember EZs are created for grid cells with non-NA values across all 3 input rasters, not everywhere there is population
 # because of this we extend the EZ raster to match the input rasters
-EZ <- terra::extend(EZ,admin_raster)
+EZ <- terra::extend(EZ, admin_raster)
 
 # create a table of EZ strata values
 
 # we need to create a table with vectors of values in each raster
 # as the admin_raster contains categories, we want the category labels rather than their corresponding numeric value
 admin_cats <- terra::cats(admin_raster)[[1]]
-admin_labels <- admin_cats[match(admin_raster[], admin_cats[,1]),2]
+admin_labels <- admin_cats[match(admin_raster[], admin_cats[,1]), 2]
 # as we defined the distance categories by numeric values, we can directly use those raster values
 EZ_strata <- data.table::data.table(EZ[],
                                     admin_labels,
                                     settlement_raster[])
 # set column names, change as needed
-names(EZ_strata) <- c("EZ_ID","strata1","strata2") 
+names(EZ_strata) <- c("EZ_ID", "strata1", "strata2") 
 # reduce table down to a single row per EZ
 EZ_strata <- na.omit(EZ_strata)
 EZ_strata <- unique(EZ_strata)
@@ -591,7 +594,7 @@ Great - looks good. Now we can merge it with our EZ table that we read in from t
 
 ```{r}
 # merge
-EZ_tab <- merge(EZ_tab,EZ_strata,by="EZ_ID")
+EZ_tab <- merge(EZ_tab, EZ_strata, by = "EZ_ID")
 # check number of rows/EZs
 nrow(EZ_tab)
 # look at the top of the table
@@ -614,7 +617,7 @@ Finally, it may be useful to count the EZs in each strata. We can summarise this
 
 ```{r}
 #| eval: false
-table(EZ_tab$strata1,EZ_tab$strata2)
+table(EZ_tab$strata1, EZ_tab$strata2)
 ```
 
 For visual inspection we can also plot it.

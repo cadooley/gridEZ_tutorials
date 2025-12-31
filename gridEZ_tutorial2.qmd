@@ -59,7 +59,7 @@ getwd()
 # you may need to change your working directory to point to the location where the data_wsm folder sits. Use setwd() to change your working directory if needed
 
 # check whether the data folder already exists - if not, create the folder 
-file_path <- paste0(getwd(),"/data_wsm/")
+file_path <- paste0(getwd(), "/data_wsm/")
 if (!dir.exists(paste0(file_path))) {
   dir.create(file_path)
 }
@@ -67,7 +67,7 @@ if (!dir.exists(paste0(file_path))) {
 
 ### Population counts data
 
-We will use two different datasets fro creating sampling frames: GHS-POP and WorldPop (which we also used in Tutorial 1).
+We will use two different population datasets for creating sampling frames in this tutorial: GHS-POP and WorldPop (which we also used in Tutorial 1).
 
 #### GHS-POP
 
@@ -85,9 +85,9 @@ Second, hover your cursor over the map until you find Tile ID: R11_C2 (the Tile 
 
 ```{r}
 
-popghs_raster <- terra::rast(paste0(getwd(),"/data_wsm/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0_R11_C2/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0_R11_C2.tif"))
+popghs_raster <- terra::rast(paste0(getwd(), "/data_wsm/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0_R11_C2/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0_R11_C2.tif"))
 
-plot(popghs_raster,main="Population distribution of Samoa & wider area (GHS-POP data)")
+plot(popghs_raster, main = "Population distribution of Samoa & wider area (GHS-POP data)")
 ```
 
 As you can see the GHS-POP tile covers a large area. We will crop this data later in the tutorial!
@@ -106,17 +106,17 @@ You can read in the data directly from the WorldPop server or you can download t
 #| eval: false
 
 # Option 1: read in directly from WP server
-popwp_raster<- terra::rast("https://data.worldpop.org/GIS/Population/Global_2015_2030/R2025A/2025/WSM/v1/100m/constrained/wsm_pop_2025_CN_100m_R2025A_v1.tif")
+popwp_raster <- terra::rast("https://data.worldpop.org/GIS/Population/Global_2015_2030/R2025A/2025/WSM/v1/100m/constrained/wsm_pop_2025_CN_100m_R2025A_v1.tif")
 ```
 
 ```{r}
 
 # Option 2: read in from file after download
-popwp_raster<- terra::rast(paste0(getwd(),"/data_wsm/wsm_pop_2025_CN_100m_R2025A_v1.tif"))
+popwp_raster <- terra::rast(paste0(getwd(), "/data_wsm/wsm_pop_2025_CN_100m_R2025A_v1.tif"))
 ```
 
 ```{r}
-plot(popwp_raster,main="Population distribution of Samoa (WorldPop data)")
+plot(popwp_raster, main = "Population distribution of Samoa (WorldPop data)")
 ```
 
 ### Settlement classification data
@@ -135,9 +135,9 @@ Second, hover your cursor over the map until you find Tile ID: R11_C2 (the Tile 
 
 ```{r}
 
-settlement_raster <- terra::rast(paste0(getwd(),"/data_wsm/GHS_SMOD_E2025_GLOBE_R2023A_54009_1000_V2_0_R11_C2/GHS_SMOD_E2025_GLOBE_R2023A_54009_1000_V2_0_R11_C2.tif"))
+settlement_raster <- terra::rast(paste0(getwd(), "/data_wsm/GHS_SMOD_E2025_GLOBE_R2023A_54009_1000_V2_0_R11_C2/GHS_SMOD_E2025_GLOBE_R2023A_54009_1000_V2_0_R11_C2.tif"))
 
-plot(settlement_raster,main="Settlement categories of Samoa & wider area (GHS-SMOD data)")
+plot(settlement_raster, main = "Settlement categories of Samoa & wider area (GHS-SMOD data)")
 ```
 
 The GHS-SMOD tile covers the same area as the GHS-POP. We will crop both datasets in the Data Processing section.
@@ -151,14 +151,15 @@ We use version 4.1 of the GADM data. If you prefer to use a different version, y
 Read in level 2 administrative units.
 
 ```{r}
+#| results: hide
 
-admin_sf <- sf::st_read(paste0(getwd(),"/data_WSM/gadm41_WSM_shp/gadm41_WSM_2.shp"))
+admin_sf <- sf::st_read(paste0(getwd(), "/data_WSM/gadm41_WSM_shp/gadm41_WSM_2.shp"))
 
 # look at the list of fields in admin_sf
 names(admin_sf)
 
 # plot the "GID_2" field which contains the level 2 unit IDs
-plot(admin_sf["GID_2"],main="Level 2 administrative units for Samoa (GADM data)")
+plot(admin_sf["GID_2"], main = "Level 2 administrative units for Samoa (GADM data)")
 ```
 
 ## Data Processing
@@ -173,7 +174,7 @@ In Tutorial 1, we briefly discussed the GHS-SMOD settlement categories. As there
 # re-define categories
 settlement_raster[settlement_raster %in% c(30,23,22,21)] <- 1 # urban
 settlement_raster[settlement_raster %in% c(13,12,11)] <- 2 # rural
-settlement_raster[settlement_raster == 10] <- NA #water
+settlement_raster[settlement_raster == 10] <- NA # water
 ```
 
 ### Preparation of input files for GHS-POP based sampling frames
@@ -194,8 +195,8 @@ r_crs <- terra::crs(popghsMW_raster)
 if(r_crs !=sf::st_crs(admin_sf)){adminMW_sf <- sf::st_transform(admin_sf, r_crs)}
 
 # re-plot the admin boundaries in their new crs
-plot(adminMW_sf["GID_2"],main="Level 2 administrative units for Samoa (GADM data)")
-mtext("CRS = Mollweide",side=3,line=1)
+plot(adminMW_sf["GID_2"], main = "Level 2 administrative units for Samoa (GADM data)")
+mtext("CRS = Mollweide", side = 3, line = 1)
 ```
 
 Now, let's crop the GHS-POP and GHS-SMOD data to include just Samoa.
@@ -208,11 +209,11 @@ Now, let's crop the GHS-POP and GHS-SMOD data to include just Samoa.
 adminMW_vect <- vect(adminMW_sf)      # convert sf to SpatVector
 adminMW_ext <- ext(adminMW_vect)      # extract SpatExtent
 # use the "SpatExtent" to crop GHS-POP & GHS-SMOD
-popghsMW_raster <- terra::crop(popghsMW_raster,adminMW_ext,snap="out",extend=TRUE)
-settMW_raster <- terra::crop(settlement_raster,adminMW_ext,snap="out",extend=TRUE)
+popghsMW_raster <- terra::crop(popghsMW_raster, adminMW_ext, snap = "out", extend = TRUE)
+settMW_raster <- terra::crop(settlement_raster, adminMW_ext, snap = "out", extend = TRUE)
 
 # plot the pop raster to check the new extent
-plot(popghsMW_raster,main="Population distribution of Samoa (GHS-POP data)")
+plot(popghsMW_raster, main = "Population distribution of Samoa (GHS-POP data)")
 ```
 
 Great - we have cropped the population and settlement layers to the correct area. From the map, it looks like there may be some buffering around the island landmasses with non-NA population values. This is fine as `gridEZ` only creates EZs where (non-NA) values for population and both strata exist. So as long as we have non-NA values everywhere inside our administrative unit boundaries and NAs values outside for at least one dataset, we know that EZs will not be constructed outside the national border.
@@ -221,10 +222,10 @@ To do this, we can create a rasterized version of the administrative units with 
 
 ```{r}
 
-# rasterize admin_sf 
-adminMW_raster <- terra::rasterize(adminMW_sf,popghsMW_raster,field="GID_2")
+# rasterize adminMW_sf 
+adminMW_raster <- terra::rasterize(adminMW_sf, popghsMW_raster, field = "GID_2")
 
-# remove admin_sf object as we no long need it
+# remove adminMW_sf object as we no long need it
 rm(adminMW_sf)
 ```
 
@@ -240,14 +241,14 @@ Finally, save the three rasters into a folder called "made" inside your "data_ws
 #| eval: false
 
 # check whether the "made" folder already exists - if not, create the folder 
-file_path <- paste0(getwd(),"/data_wsm/made/")
+file_path <- paste0(getwd(), "/data_wsm/made/")
 if (!dir.exists(paste0(file_path))) {
   dir.create(file_path)
 }
 # save rasters
-terra::writeRaster(adminMW_raster,paste0(file_path,"adminMW.tif"))
-terra::writeRaster(popghsMW_raster,paste0(file_path,"popghsMW.tif"))
-terra::writeRaster(settMW_raster,paste0(file_path,"settMW.tif"))
+terra::writeRaster(adminMW_raster, paste0(file_path, "adminMW.tif"))
+terra::writeRaster(popghsMW_raster, paste0(file_path, "popghsMW.tif"))
+terra::writeRaster(settMW_raster, paste0(file_path, "settMW.tif"))
 ```
 
 ### Preparation of input files for WorldPop based sampling frames
@@ -271,8 +272,8 @@ popwpWGS_raster <- popwp_raster
 rm(popwp_raster)
 
 # if the other layers have a different CRS, transform
-if(r_crs !=sf::st_crs(admin_sf)){adminWGS_sf <- sf::st_transform(admin_sf, r_crs)}
-if(r_crs !=terra::crs(settlement_raster)){settWGS_raster <- terra::project(settlement_raster,terra::crs(popwpWGS_raster),method="near")}
+if (r_crs !=sf::st_crs(admin_sf)){adminWGS_sf <- sf::st_transform(admin_sf, r_crs)}
+if (r_crs !=terra::crs(settlement_raster)){settWGS_raster <- terra::project(settlement_raster, terra::crs(popwpWGS_raster), method = "near")}
 
 ```
 
@@ -280,10 +281,10 @@ Next, we need to convert the sf object containing administrative units into a ra
 
 ```{r}
 
-# rasterize admin_sf
-adminWGS_raster <- terra::rasterize(adminWGS_sf,popwpWGS_raster,field="GID_2")
+# rasterize adminWGS_sf
+adminWGS_raster <- terra::rasterize(adminWGS_sf, popwpWGS_raster, field = "GID_2")
 
-# remove admin_sf object as we no long need it
+# remove adminWGS_sf object as we no long need it
 rm(adminWGS_sf)
 
 ```
@@ -294,7 +295,7 @@ If you are interested in creating sampling frames for areas constrained to settl
 
 ```{r}
 # replace grid cells of NA population counts that also have non-NA administrative unit values with 0 counts
-popwpWGS_raster[is.na(popwpWGS_raster)&!is.na(adminWGS_raster)] <- 0
+popwpWGS_raster[is.na(popwpWGS_raster) & !is.na(adminWGS_raster)] <- 0
 ```
 
 Next, we crop the settlement raster to the extent of the administrative units and population rasters.
@@ -302,7 +303,7 @@ Next, we crop the settlement raster to the extent of the administrative units an
 ```{r}
 
 # crop 
-settWGS_raster <- terra::crop(settWGS_raster,adminWGS_raster,snap="out",extend=TRUE)
+settWGS_raster <- terra::crop(settWGS_raster, adminWGS_raster, snap = "out", extend = TRUE)
 
 ```
 
@@ -320,9 +321,9 @@ We are ready to save our rasters!
 #| eval: false
 
 # save rasters
-terra::writeRaster(adminWGS_raster,paste0(file_path,"adminWGS.tif"))
-terra::writeRaster(popwpWGS_raster,paste0(file_path,"popwpWGS.tif"))
-terra::writeRaster(settWGS_raster,paste0(file_path,"settWGS.tif"))
+terra::writeRaster(adminWGS_raster, paste0(file_path, "adminWGS.tif"))
+terra::writeRaster(popwpWGS_raster, paste0(file_path, "popwpWGS.tif"))
+terra::writeRaster(settWGS_raster, paste0(file_path, "settWGS.tif"))
 ```
 
 ## gridEZ: sampling frame generation
@@ -348,16 +349,16 @@ Next set the file pathways for input and output files.
 
 ```{r}
 # input
-file_path_inputs <- paste0(getwd(),"/data_wsm/made/")
+file_path_inputs <- paste0(getwd(), "/data_wsm/made/")
 
 # output
 # check whether the output folder already exists - if not, create the folder 
-file_path_outputs_tuts <- paste0(getwd(),"/results_wsm/")
-if (!dir.exists(paste0(file_path_outputs_tuts))) {
+file_path_outputs_tuts <- paste0(getwd(), "/results_wsm/")
+if (!dir.exists(file_path_outputs_tuts)) {
   dir.create(file_path_outputs_tuts)
 }
-file_path_outputs <- paste0(getwd(),"/results_wsm/tutorial2/")
-if (!dir.exists(paste0(file_path_outputs))) {
+file_path_outputs <- paste0(getwd(), "/results_wsm/tutorial2/")
+if (!dir.exists(file_path_outputs)) {
   dir.create(file_path_outputs)
 }
 
@@ -369,64 +370,64 @@ Now we can create our sampling frames. We'll change `run_ID` for each new run of
 #| eval: false
 
 # GHS-POP pop ests, small EZs
-gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs,"popghsMW.tif"), 
-                strata1_raster_path = paste0(file_path_inputs,"adminMW.tif"), 
-                strata2_raster_path = paste0(file_path_inputs,"settMW.tif"),
+gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs, "popghsMW.tif"), 
+                strata1_raster_path = paste0(file_path_inputs, "adminMW.tif"), 
+                strata2_raster_path = paste0(file_path_inputs, "settMW.tif"),
                 predefined_EZ_size = TRUE, 
                 EZ_target_size = "small",
-                output_path = paste0(file_path_outputs), 
+                output_path = file_path_outputs, 
                 run_ID = "wsm_ghs_small",
-                ncores=processing_cores)
+                ncores = processing_cores)
 
 # GHS-POP pop ests, medium EZs
-gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs,"popghsMW.tif"), 
-                strata1_raster_path = paste0(file_path_inputs,"adminMW.tif"), 
-                strata2_raster_path = paste0(file_path_inputs,"settMW.tif"),
+gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs, "popghsMW.tif"), 
+                strata1_raster_path = paste0(file_path_inputs, "adminMW.tif"), 
+                strata2_raster_path = paste0(file_path_inputs, "settMW.tif"),
                 predefined_EZ_size = TRUE, 
                 EZ_target_size = "medium",
-                output_path = paste0(file_path_outputs), 
+                output_path = file_path_outputs, 
                 run_ID = "wsm_ghs_med",
-                ncores=processing_cores)
+                ncores = processing_cores)
 
 # GHS-POP pop ests, large EZs
-gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs,"popghsMW.tif"), 
-                strata1_raster_path = paste0(file_path_inputs,"adminMW.tif"), 
-                strata2_raster_path = paste0(file_path_inputs,"settMW.tif"),
+gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs, "popghsMW.tif"), 
+                strata1_raster_path = paste0(file_path_inputs, "adminMW.tif"), 
+                strata2_raster_path = paste0(file_path_inputs, "settMW.tif"),
                 predefined_EZ_size = TRUE, 
                 EZ_target_size = "large",
-                output_path = paste0(file_path_outputs), 
+                output_path = file_path_outputs, 
                 run_ID = "wsm_ghs_large",
-                ncores=processing_cores)
+                ncores = processing_cores)
 
 # WP pop ests, small EZs
-gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs,"popwpWGS.tif"), 
-                strata1_raster_path = paste0(file_path_inputs,"adminWGS.tif"), 
-                strata2_raster_path = paste0(file_path_inputs,"settWGS.tif"),
+gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs, "popwpWGS.tif"), 
+                strata1_raster_path = paste0(file_path_inputs, "adminWGS.tif"), 
+                strata2_raster_path = paste0(file_path_inputs, "settWGS.tif"),
                 predefined_EZ_size = TRUE, 
                 EZ_target_size = "small",
-                output_path = paste0(file_path_outputs), 
+                output_path = file_path_outputs, 
                 run_ID = "wsm_wp_small",
-                ncores=processing_cores)
+                ncores = processing_cores)
 
 # WP pop ests, medium EZs
-gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs,"popwpWGS.tif"), 
-                strata1_raster_path = paste0(file_path_inputs,"adminWGS.tif"), 
-                strata2_raster_path = paste0(file_path_inputs,"settWGS.tif"),
+gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs, "popwpWGS.tif"), 
+                strata1_raster_path = paste0(file_path_inputs, "adminWGS.tif"), 
+                strata2_raster_path = paste0(file_path_inputs, "settWGS.tif"),
                 predefined_EZ_size = TRUE, 
                 EZ_target_size = "medium",
-                output_path = paste0(file_path_outputs), 
+                output_path = file_path_outputs, 
                 run_ID = "wsm_wp_med",
-                ncores=processing_cores)
+                ncores = processing_cores)
 
 # WP pop ests, large EZs
-gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs,"popwpWGS.tif"), 
-                strata1_raster_path = paste0(file_path_inputs,"adminWGS.tif"), 
-                strata2_raster_path = paste0(file_path_inputs,"settWGS.tif"),
+gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs, "popwpWGS.tif"), 
+                strata1_raster_path = paste0(file_path_inputs, "adminWGS.tif"), 
+                strata2_raster_path = paste0(file_path_inputs, "settWGS.tif"),
                 predefined_EZ_size = TRUE, 
                 EZ_target_size = "large",
-                output_path = paste0(file_path_outputs), 
+                output_path = file_path_outputs, 
                 run_ID = "wsm_wp_large",
-                ncores=processing_cores)
+                ncores = processing_cores)
 ```
 
 Great - now we can look at the results!
@@ -467,7 +468,13 @@ OK - let's evaluates the 6 sampling frames we have generated in this tutorial. F
 
 ```{r}
 # table of threshold values for diff. size EZs
-thresholds_tab <- data.table::data.table( popdata=rep(c("wp","ghs"),each=3), EZsize=rep(c("small","med","large"),2), minpop=rep(c(50,333,800),2), maxpop=rep(c(100,667,1600),2), lowermaxgeog=rep(c(75,675,1875),2), uppermaxgeog=rep(c(150,1350,3750),2) )
+thresholds_tab <- data.table::data.table(
+  popdata = rep(c("wp", "ghs"), each = 3), 
+  EZsize = rep(c("small", "med", "large"), 2), 
+  minpop = rep(c(50, 333, 800), 2), 
+  maxpop = rep(c(100, 667, 1600), 2), 
+  lowermaxgeog = rep(c(75, 675, 1875), 2), 
+  uppermaxgeog = rep(c(150, 1350, 3750), 2))
 thresholds_tab
 ```
 
@@ -476,31 +483,31 @@ The next section of code categorizes each EZ in each of our sampling frames and 
 ```{r}
 
 # list of all files in output folder
-file_list <- list.files(paste0(file_path_outputs),full.names = TRUE) 
+file_list <- list.files(paste0(file_path_outputs), full.names = TRUE) 
 # subset to outputs saved above
 file_list <- file_list[grepl("wsm_wp|wsm_ghs", file_list)] 
 
 # categorise EZs based on their pop & geog
-res_poly_list <- lapply(split(thresholds_tab, seq_len(nrow(thresholds_tab))),function(x){
+res_poly_list <- lapply(split(thresholds_tab, seq_len(nrow(thresholds_tab))), function(x){
   # read in summary table of sampling frame
   file_name <- file_list[grepl(paste(x$popdata), file_list) & grepl(paste(x$EZsize), file_list) & grepl("\\.csv$", file_list)]
-  EZ_tab <- read.csv(paste(file_name),header=T)
+  EZ_tab <- read.csv(paste(file_name), header = TRUE)
   # read in sampling frame raster
   file_name <- file_list[grepl(paste(x$popdata), file_list) & grepl(paste(x$EZsize), file_list) & grepl("\\.tif$", file_list)]
   EZ <- terra::rast(paste(file_name))
   # convert to sf polygons
   res_poly <- terra::as.polygons(EZ, dissolve = TRUE)
   res_poly <- sf::st_as_sf(res_poly)
-  res_poly <- merge(res_poly,EZ_tab,by="EZ_ID")
+  res_poly <- merge(res_poly, EZ_tab, by = "EZ_ID")
   res_poly$popdata <- x$popdata
   res_poly$EZsize <- x$EZsize
   res_poly$cat <- NA
-  res_poly$cat[res_poly$N<=x$uppermaxgeog & res_poly$pop>=x$minpop & res_poly$pop<=x$maxpop] <- 1
-  res_poly$cat[res_poly$N>=x$lowermaxgeog & res_poly$N<=x$uppermaxgeog & res_poly$pop<x$minpop] <- 2
-  res_poly$cat[res_poly$N==1 & res_poly$pop>x$maxpop] <- 3
-  res_poly$cat[res_poly$N>1 & res_poly$pop>x$maxpop] <- 4
-  res_poly$cat[res_poly$N<x$lowermaxgeog & res_poly$pop<x$minpop] <- 5
-  res_poly$cat[res_poly$N>x$uppermaxgeog] <- 6
+  res_poly$cat[res_poly$N <= x$uppermaxgeog & res_poly$pop >= x$minpop & res_poly$pop <= x$maxpop] <- 1
+  res_poly$cat[res_poly$N >= x$lowermaxgeog & res_poly$N <= x$uppermaxgeog & res_poly$pop < x$minpop] <- 2
+  res_poly$cat[res_poly$N == 1 & res_poly$pop > x$maxpop] <- 3
+  res_poly$cat[res_poly$N > 1 & res_poly$pop > x$maxpop] <- 4
+  res_poly$cat[res_poly$N < x$lowermaxgeog & res_poly$pop < x$minpop] <- 5
+  res_poly$cat[res_poly$N > x$uppermaxgeog] <- 6
   res_poly
 })
 
@@ -514,9 +521,9 @@ count_list <- lapply(res_poly_list, function(res_poly) {
     count_vec <- setNames(counts$n, counts$cat)
     full_vec <- setNames(rep(0, length(all_cats)), all_cats)
     full_vec[names(count_vec)] <- count_vec
-    prop_vec <- round((full_vec/sum(full_vec))*100,1)
+    prop_vec <- round((full_vec/sum(full_vec))*100, 1)
     names(prop_vec) <- paste0("perc", all_cats)
-    data.table::data.table(popdata=res_poly$popdata[1],EZsize=res_poly$EZsize[1],nEZ=sum(full_vec),t(full_vec),t(prop_vec))
+    data.table::data.table(popdata = res_poly$popdata[1], EZsize = res_poly$EZsize[1], nEZ = sum(full_vec), t(full_vec), t(prop_vec))
 })
 
 # rbind above count_list object into a table
@@ -538,9 +545,9 @@ Now, percentages.
 summary_tab[,c(1:3,10:15)] # percentage of EZs
 ```
 
-Across all sampling frames, the majory of EZs fall into categories 1 and 2. The number of EZs falling within category 3 (single cell, high population EZs) is really dependent on population density versus the target population per EZ criterion. In countries with lots of very densely populated areas, we would expect to see lots of EZs in category 3. The only sampling frame containing category 3 EZs in our set of 6, is the one based on GHS-POP with "small" EZ criteria. The results in our summary table tell us that there are 24 GHS-POP grid cells with population counts over 100 people.
+Across all sampling frames, the majority of EZs fall into categories 1 and 2. The number of EZs falling within category 3 (single cell, high population EZs) is really dependent on population density versus the target population per EZ criterion. In countries with lots of very densely populated areas, we would expect to see lots of EZs in category 3. The only sampling frame containing category 3 EZs in our set of 6, is the one based on GHS-POP with "small" EZ criteria. The results in our summary table tell us that there are 24 GHS-POP grid cells with population counts over 100 people.
 
-There are relatively few EZs falling into category 4 (multi-single cell, high population EZs) and very rarely EZs falling into category 6 (exceeding the acceptable geographic maximum). Category 5 EZs (small in terms of both population and geographic size) occur between 5.7 and 21.7% across the 6 sampling frames.
+There are relatively few EZs falling into category 4 (multi-cell, high population EZs) and very rarely EZs falling into category 6 (exceeding the acceptable geographic maximum). Category 5 EZs (small in terms of both population and geographic size) occur between 5.7 and 21.7% across the 6 sampling frames.
 
 Let's map the two "large" EZ sampling frames, colour coded by EZ category.
 
@@ -553,11 +560,11 @@ cat_cols <- scales::hue_pal()(6)
 for(i in c(3,6)){
   example_EZs <- res_poly_list[[i]]
   example_EZs$cat <- as.factor(example_EZs$cat)
-  plot(example_EZs["cat"], pal = cat_cols, main=paste("EZs by evaluation category (",example_EZs$popdata[1],"; ",example_EZs$EZsize[1]," EZs)",sep=""))
+  plot(example_EZs["cat"], pal = cat_cols, main = paste("EZs by evaluation category (", example_EZs$popdata[1], "; ", example_EZs$EZsize[1], " EZs)", sep = ""))
 }
 ```
 
-You can see that EZs across the two sampling frame show a number of similarities in terms of size, shape and category for many locations. The main obvious difference is the angle of many EZs' boundaries and this comes from the CRS of the administrative boundaries differing.
+You can see that EZs across the two sampling frame show a number of similarities in terms of size, shape and category for many locations. The main obvious difference is the angle of many EZ boundaries which comes from the CRS of the administrative boundaries differing.
 
 The selection of administrative boundaries and settlement data will have a huge impact on the sampling frame produced by `gridEZ` as the algorithm assumes the boundaries between classifications (along grid lines) of these two input datasets is true and does not amend them under any circumstances.
 

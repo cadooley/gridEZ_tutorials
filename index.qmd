@@ -31,7 +31,7 @@ knitr::include_graphics("images/WSM_example_output_medEZ.png")
 
 ### R software
 
-The **`gridEZ`** algorithm is operationalised through the `gridEZ2` R package. Basic knowledge of R recommended for using `gridEZ`, however, this set of tutorials aims to simplify the process of generating sampling frames - so, even with limited experience using R, you should be able to work through them. If you are new to R or would like to brush up, we recommend the following tutorial [@maclachlan2022], sections 2.4.3 to 2.6: <https://andrewmaclachlan.github.io/CASA0005repo/introduction-to-r.html#r-and-rstudio>
+The **`gridEZ`** algorithm is operationalised through the `gridEZ2` R package. Basic knowledge of R is recommended for using `gridEZ`, however, this set of tutorials aims to simplify the process of generating sampling frames - so, even with limited experience using R, you should be able to work through them. If you are new to R or would like to brush up, we recommend the following tutorial [@maclachlan2022], sections 2.4.3 to 2.6: <https://andrewmaclachlan.github.io/CASA0005repo/introduction-to-r.html#r-and-rstudio>
 
 ### Geographic data
 
@@ -49,7 +49,7 @@ The goal of `gridEZ` is to generate sampling frames in preparation for gridded s
 
 ## Installing the gridEZ2 R package
 
-To install the `gridEZ2` R package from github, you will first need the `devtools` R package. As with all R packages, you only need to install it once. All subsequent tutorial chapters assume that `gridEZ2` has been installed.
+To install the `gridEZ2` R package from GitHub, you will first need the `devtools` R package. As with all R packages, you only need to install it once. All subsequent tutorial chapters assume that `gridEZ2` has been installed.
 
 ```{r}
 #| eval: false
@@ -63,7 +63,7 @@ devtools::install_github("cadooley/gridEZ2")
 
 ## Input data
 
-Given that many surveys need one or two forms of spatial stratification, e.g. by administrative units and settlement type (urban/rural), we have deisnged the `gridEZ` function to create stratified sampling frames. This means that the geographic units (enumeration zones) within the sampling frame do not span more than one stratum. For a robust survey design, sampling frame EZs should be delinated such that they all have a similar population size (except in regions with very few inhabitants). To generate stratified sampling frames made of EZs with an ideal population size, `gridEZ` requires three input datasets:
+Given that many surveys need one or two forms of spatial stratification, e.g. by administrative units and settlement type (urban/rural), we have designed the `gridEZ` function to create stratified sampling frames. This means that the geographic units (enumeration zones) within the sampling frame do not span more than one stratum. For a robust survey design, sampling frame EZs should be delineated such that they all have a similar population size (except in regions with very few inhabitants). To generate stratified sampling frames made of EZs with an ideal population size, `gridEZ` requires three input datasets:
 
 -   gridded high-spatial-resolution population counts/estimates
 
@@ -104,12 +104,12 @@ There are three options: small, medium and large. @tbl-table0.1 reports the targ
 
 library(knitr) 
 
-df <- data.frame(c("small","medium","large"),
-                   c(75,500,1200),
-                 c("50-100","333-667","800-1600"),
-                   c(100,900,2500),
-                 c(150,1350,3750))
-colnames(df) <- c("EZ size","Target population size per EZ","Acceptable population range", "Target maximum grid cells per EZ", "Acceptable maximum grid cells per EZ")
+df <- data.frame(c("small", "medium", "large"),
+                   c(75, 500, 1200),
+                 c("50-100", "333-667", "800-1600"),
+                   c(100, 900, 2500),
+                 c(150, 1350, 3750))
+colnames(df) <- c("EZ size", "Target population size per EZ", "Acceptable population range", "Target maximum grid cells per EZ", "Acceptable maximum grid cells per EZ")
 
 knitr::kable(df)
 ```
@@ -122,7 +122,7 @@ If you would like to define your own target population size per EZ and maximum g
 
 ## Guidance on tutorials
 
-Tutorial 1 provides a comprehensive guide to preparing input data, running `gridEZ`, and evaluating the resulting sampling frame. In this first tutorial, we go into a lot of detail. In the subsequent tutorials, less explanation is given for the data processing steps and output sampling frames not examined to the same extent. Tutorials 2 and beyond present example workflows designed for a range of survey objectives. We strongly recommend that you complete Tutorial 1 before eorking through other tutorials. Once you have Tutorial one in the bag, you can move on to any of the others, i.e. they are not intended to be sequential.
+Tutorial 1 provides a comprehensive guide to preparing input data, running `gridEZ`, and evaluating the resulting sampling frame. In this first tutorial, we go into a lot of detail. In the subsequent tutorials, less explanation is given for the data processing steps and output sampling frames are not examined to the same extent. Tutorials 2 and beyond present example workflows designed for a range of survey objectives. We strongly recommend that you complete Tutorial 1 before working through other tutorials. Once you have Tutorial 1 in the bag, you can move on to any of the others, i.e. they are not intended to be sequential.
 
 To help you quickly locate relevant tutorials, the table below summarises their key features.
 
@@ -133,13 +133,20 @@ To help you quickly locate relevant tutorials, the table below summarises their 
 
 library(knitr) 
 
-df <- data.frame(c(1:3),
-                   c("WorldPop 2025 (R2025A version v1)","WorldPop 2025 (R2025A version v1) & GHS-POP 2025 (R2023A)","WorldPop 2025 (R2025A version v1)"),
-                 c("Administrative units: GADM (v4.1)","Administrative units: GADM (v4.1)","Administrative units: GADM (v4.1)"),
-                 c("Settlement type: GHS-SMOD 2025 (R2023A)","Settlement type: GHS-SMOD 2025 (R2023A)","Distance to coast"),
-                   c("large","small, medium, large","large"),
-                 c("both","pre-defined","pre-defined"))
-colnames(df) <- c("Tutorial","Pop. data","Strata 1","Strata 2","EZ size","Pre/user-defined specs")
+df <- data.frame(
+  c(1:3),
+  c("WorldPop 2025 (R2025A version v1)", 
+    "WorldPop 2025 (R2025A version v1) & GHS-POP 2025 (R2023A)",
+    "WorldPop 2025 (R2025A version v1)"),
+  c("Administrative units: GADM (v4.1)", 
+    "Administrative units: GADM (v4.1)", 
+    "Administrative units: GADM (v4.1)"),
+  c("Settlement type: GHS-SMOD 2025 (R2023A)", 
+    "Settlement type: GHS-SMOD 2025 (R2023A)", 
+    "Distance to coast"),
+  c("large", "small, medium, large", "large"),
+  c("both", "pre-defined", "pre-defined"))
+colnames(df) <- c("Tutorial", "Pop. data", "Strata 1", "Strata 2", "EZ size", "Pre/user-defined specs")
 
 knitr::kable(df)
 ```
