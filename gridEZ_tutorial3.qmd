@@ -12,7 +12,7 @@ bibliography: references.bib
 
 **Suggested citation:** {{< meta suggested-citation >}}
 
-## Tutorial Aim
+## Tutorial aim
 
 The aim of this tutorial is to generate and evaluate a bespoke gridded sampling frame for Samoa stratified by administrative units and distance to coast. This tutorial provides guidance on how to create strata that may be very specific to a survey instead of using widely available data such as settlement type. We use distance to coast for this Samoa example but this could just as easily be distance to any points of interest, e.g. health care facilities or railway stations, depending on the aims of the survey for which the sampling frame is being constructed. The gridded sampling frame will contain gridded Enumeration Zones (EZs) that can be used for sampling survey units.
 
@@ -26,7 +26,7 @@ Load all the R packages necessary to complete this tutorial. If you have not yet
 #| warning: false
 
 # list of required packages
-required_packages <- c("sf", "terra", "parallel", "data.table", "ggplot2", "scico", "patchwork")
+required_packages <- c("sf", "terra", "parallel", "data.table", "ggplot2", "scico")
 
 # install missing packages
 install.packages(setdiff(required_packages, installed.packages()[, "Package"]))
@@ -38,7 +38,6 @@ library(data.table)
 library(parallel)
 library(ggplot2)
 library(scico)
-library(patchwork)
 library(gridEZ2)
 
 ```
@@ -88,7 +87,7 @@ population_raster <- terra::rast(paste0(getwd(), "/data_wsm/wsm_pop_2025_CN_100m
 plot(population_raster, main = "Population distribution of Samoa (WorldPop data)")
 ```
 
-### Administrative Unit Boundaries
+### Administrative unit boundaries
 
 The GADM boundaries can be downloaded here by selecting Samoa from the drop down and then clicking "Shapefile": <https://gadm.org/download_country.html>
 
@@ -105,7 +104,7 @@ names(admin_sf)
 plot(admin_sf["GID_2"], main = "Level 2 administrative units for Samoa (GADM data)")
 ```
 
-## Data Processing
+## Data processing
 
 As with any spatial analysis, the first step is to ensure the CRS of our datasets is the same.
 
@@ -183,7 +182,7 @@ pop_per_band
 
 Approximately 72% of the population falls within 2km of the coastline (band 1) and there is about 23% of the population between 2 and 5kms of the coastline. A small portion (\~5%) of the population live more than 5km away from the coastline. According to our definition of where the coastline sits, about 128 people live in the sea. This may be due to the way the administrative units are rasterized. If the polygon line of the boundary does not cross the centroid of a grid cell, that grid cell is assumed to be outside of the polygon. In reality, the rasterization step can lead to partially populated grid cells being incorrectly counted as outside the country. This may also occur if the population data and (unrasterized) administrative unit boundaries don't align.
 
-This mismatch in datasets is a common issue. The datasets can be reviewed to determine whether any real population might be excluded and to decide if additional steps are needed. We cover this in Tutorial X. For now we will continue with the rasters that we have.
+This mismatch in datasets is a common issue. The datasets can be reviewed to determine whether any real population might be excluded and to decide if additional steps are needed. For this example we will continue with the rasters that we have.
 
 The final step of the data processing is to save the three rasters into a folder called "made" inside your "data_wsm" folder.
 

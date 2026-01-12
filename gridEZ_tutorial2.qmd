@@ -12,7 +12,7 @@ bibliography: references.bib
 
 **Suggested citation:** {{< meta suggested-citation >}}
 
-## Tutorial Aim
+## Tutorial aim
 
 The aim of this tutorial is to generate and compare bespoke gridded sampling frames for Samoa based on different gridded population datasets. Comparisons will be made for three different target Enumeration Zone (EZ) population sizes.
 
@@ -28,7 +28,7 @@ Load all the R packages necessary to complete this tutorial. If you have not yet
 #| warning: false
 
 # list of required packages
-required_packages <- c("sf", "terra", "parallel", "data.table", "ggplot2", "scico", "patchwork")
+required_packages <- c("sf", "terra", "parallel", "data.table", "ggplot2", "scico")
 
 # install missing packages
 install.packages(setdiff(required_packages, installed.packages()[, "Package"]))
@@ -40,7 +40,6 @@ library(data.table)
 library(parallel)
 library(ggplot2)
 library(scico)
-#library(patchwork)
 library(gridEZ2)
 
 ```
@@ -60,7 +59,7 @@ getwd()
 
 # check whether the data folder already exists - if not, create the folder 
 file_path <- paste0(getwd(), "/data_wsm/")
-if (!dir.exists(paste0(file_path))) {
+if (!dir.exists(file_path)) {
   dir.create(file_path)
 }
 ```
@@ -142,7 +141,7 @@ plot(settlement_raster, main = "Settlement categories of Samoa & wider area (GHS
 
 The GHS-SMOD tile covers the same area as the GHS-POP. We will crop both datasets in the Data Processing section.
 
-### Administrative Unit Boundaries
+### Administrative unit boundaries
 
 For the administrative boundaries, we'll use GADM as it has global coverage and has fully harmonized boundaries [@GADM2022]. Download GADM boundaries here by selecting Samoa from the drop down and then clicking "Shapefile": <https://gadm.org/download_country.html>
 
@@ -162,7 +161,7 @@ names(admin_sf)
 plot(admin_sf["GID_2"], main = "Level 2 administrative units for Samoa (GADM data)")
 ```
 
-## Data Processing
+## Data processing
 
 The two population datasets are in different coordinate reference systems (CRS). To preserve the original population estimates in each dataset, we'll prepare two sets of `gridEZ` input files - one for each CRS.
 
@@ -291,7 +290,7 @@ rm(adminWGS_sf)
 
 In this tutorial, we want to generate sampling frames the cover the whole area of Samoa. As the `gridEZ` function will include all grid cells that have non-NA values across the input datasets, we convert all NA population values inside the national boundary with 0s.
 
-If you are interested in creating sampling frames for areas constrained to settlements, please check out Tutorial X.
+If you are interested in creating sampling frames for areas constrained to settlements, please check out Tutorial 4.
 
 ```{r}
 # replace grid cells of NA population counts that also have non-NA administrative unit values with 0 counts

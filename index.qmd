@@ -122,6 +122,8 @@ If you would like to define your own target population size per EZ and maximum g
 
 ## Guidance on tutorials
 
+Tutorials can be selected from the main menu which can be found on the left sidebar for laptops/PCs or by clicking on the menu icon in the top-left corner on mobile devices.
+
 Tutorial 1 provides a comprehensive guide to preparing input data, running `gridEZ`, and evaluating the resulting sampling frame. In this first tutorial, we go into a lot of detail. In the subsequent tutorials, less explanation is given for the data processing steps and output sampling frames are not examined to the same extent. Tutorials 2 and beyond present example workflows designed for a range of survey objectives. We strongly recommend that you complete Tutorial 1 before working through other tutorials. Once you have Tutorial 1 in the bag, you can move on to any of the others, i.e. they are not intended to be sequential.
 
 To help you quickly locate relevant tutorials, the table below summarises their key features.

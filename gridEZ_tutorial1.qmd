@@ -12,7 +12,7 @@ bibliography: references.bib
 
 **Suggested citation:** {{< meta suggested-citation >}}
 
-## Tutorial Aim
+## Tutorial aim
 
 The aim of this tutorial is to generate and evaluate a bespoke gridded sampling frame for Samoa based on gridded population data, gridded settlement data and administrative unit boundaries. The gridded sampling frame will contain gridded Enumeration Zones (EZs) that can be used for sampling survey units.
 
@@ -103,7 +103,7 @@ First, select the following options on the left hand side:
 Second, hover your cursor over the map until you find Tile ID: R11_C2 (the Tile ID is written under the map). Click the tile to download. Unzip the data and add to the data folder called "data_wsm".
 
 ```{r}
-
+# read in from file after download
 settlement_raster <- terra::rast(paste0(getwd(), "/data_wsm/GHS_SMOD_E2025_GLOBE_R2023A_54009_1000_V2_0_R11_C2/GHS_SMOD_E2025_GLOBE_R2023A_54009_1000_V2_0_R11_C2.tif"))
 
 plot(settlement_raster, main = "Settlement categories (GHS-SMOD data)")
@@ -111,7 +111,7 @@ plot(settlement_raster, main = "Settlement categories (GHS-SMOD data)")
 
 As you can see the GHS-SMOD tile covers a large area. We will crop this data shortly!
 
-### Administrative Unit Boundaries
+### Administrative unit boundaries
 
 For the administrative boundaries, we'll use GADM as it has global coverage and has fully harmonized boundaries [@GADM2022]. Download GADM boundaries here by selecting Samoa from the drop down and then clicking "Shapefile": <https://gadm.org/download_country.html>
 
@@ -121,6 +121,7 @@ Read in level 2 administrative units.
 
 ```{r}
 
+# read in from file after download
 admin_sf <- sf::st_read(paste0(getwd(), "/data_WSM/gadm41_WSM_shp/gadm41_WSM_2.shp"))
 
 # look at the list of fields in admin_sf
@@ -130,7 +131,7 @@ names(admin_sf)
 plot(admin_sf["GID_2"], main = "Level 2 administrative units for Samoa (GADM data)")
 ```
 
-## Data Processing
+## Data processing
 
 The first processing step is to ensure all data have the same coordinate reference system (CRS).
 
@@ -330,13 +331,13 @@ As you can see from the code above, the user-defined specifications route offers
 
 Great - now we can look at the results!
 
-## Evaluating Gridded Sampling Frames
+## Evaluating gridded sampling frames
 
 The `gridEZ` function produces two output files:
 
 -   .csv with file name beginning "EZ_Pop_Ncells\_". Tabular results for EZs within the sampling frame.
 
--   .tif (raster) with file name beginning "EZ_IDs\_". Raster of the sampling frame.
+-   .tif (raster) with file name beginning "EZ_IDs\_". Raster of the sampling frame. Each grid cell shows the ID of the EZ it belongs to.
 
 Let's start by looking at the outputs for the sampling frame generated using the pre-defined settings.
 

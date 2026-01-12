@@ -12,7 +12,7 @@ bibliography: references.bib
 
 **Suggested citation:** {{< meta suggested-citation >}}
 
-## Tutorial Aim
+## Tutorial aim
 
 The aim of this tutorial is to generate and evaluate a bespoke gridded sampling frame constrained to settled areas across Samoa. For this example we stratify by administrative units only and demonstrate how to run gridEZ with justone strata dataset rather than two. The gridded sampling frame will contain units called gridded Enumeration Zones (EZs) that can be sampled from for surveys.
 
@@ -92,7 +92,7 @@ population_raster <- terra::rast(paste0(getwd(),"/data_wsm/wsm_pop_2025_CN_100m_
 plot(population_raster,main="Population distribution of Samoa (WorldPop data)")
 ```
 
-### Administrative Unit Boundaries
+### Administrative unit boundaries
 
 The GADM boundaries can be downloaded here by selecting Samoa from the drop down and then clicking "Shapefile": <https://gadm.org/download_country.html>
 
@@ -109,7 +109,7 @@ names(admin_sf)
 plot(admin_sf["GID_2"],main="Level 2 administrative units for Samoa (GADM data)")
 ```
 
-## Data Processing
+## Data processing
 
 As with any spatial analysis, the first step is to ensure the CRS of our datasets is the same.
 
