@@ -238,9 +238,9 @@ if (!dir.exists(paste0(file_path_outputs))) {
 #| eval: false
 
 # gridEZ code: stratification by level 2 admin units & distance to coast categories
-gridEZ2::gridEZ(population_raster_path  <- paste0(file_path_inputs,"popWP.tif"),
-                strata1_raster_path  <- paste0(file_path_inputs,"adminGADM.tif"),
-                strata2_raster_path  <- paste0(file_path_inputs,"disttocoast.tif"),
+gridEZ2::gridEZ(population_raster_path = paste0(file_path_inputs,"popWP.tif"),
+                strata1_raster_path = paste0(file_path_inputs,"adminGADM.tif"),
+                strata2_raster_path = paste0(file_path_inputs,"disttocoast.tif"),
                 predefined_EZ_size = TRUE,
                 EZ_target_size = "large",
                 output_path = paste0(file_path_outputs),

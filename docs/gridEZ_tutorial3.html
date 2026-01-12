@@ -467,8 +467,8 @@ Geodetic CRS:  WGS 84</code></pre>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          used (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
-Ncells 1671873 89.3    3078038 164.4         NA  2448298 130.8
-Vcells 2531676 19.4   10146329  77.5      36864 10145561  77.5</code></pre>
+Ncells 1671873 89.3    3078031 164.4         NA  2448312 130.8
+Vcells 2531678 19.4   10146329  77.5      36864 10145563  77.5</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define number of cores for parallel processing</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>processing_cores <span class="ot">&lt;-</span> <span class="fu">max</span>(parallel<span class="sc">::</span><span class="fu">detectCores</span>() <span class="sc">-</span> <span class="dv">1</span>, <span class="dv">1</span>)</span>
@@ -486,9 +486,9 @@ Vcells 2531676 19.4   10146329  77.5      36864 10145561  77.5</code></pre>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># gridEZ code: stratification by level 2 admin units &amp; distance to coast categories</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>gridEZ2<span class="sc">::</span><span class="fu">gridEZ</span>(population_raster_path  <span class="ot">&lt;-</span> <span class="fu">paste0</span>(file_path_inputs,<span class="st">"popWP.tif"</span>),</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                strata1_raster_path  <span class="ot">&lt;-</span> <span class="fu">paste0</span>(file_path_inputs,<span class="st">"adminGADM.tif"</span>),</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                strata2_raster_path  <span class="ot">&lt;-</span> <span class="fu">paste0</span>(file_path_inputs,<span class="st">"disttocoast.tif"</span>),</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>gridEZ2<span class="sc">::</span><span class="fu">gridEZ</span>(<span class="at">population_raster_path =</span> <span class="fu">paste0</span>(file_path_inputs,<span class="st">"popWP.tif"</span>),</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">strata1_raster_path =</span> <span class="fu">paste0</span>(file_path_inputs,<span class="st">"adminGADM.tif"</span>),</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">strata2_raster_path =</span> <span class="fu">paste0</span>(file_path_inputs,<span class="st">"disttocoast.tif"</span>),</span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">predefined_EZ_size =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">EZ_target_size =</span> <span class="st">"large"</span>,</span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">output_path =</span> <span class="fu">paste0</span>(file_path_outputs),</span>
